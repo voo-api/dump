@@ -1,0 +1,23 @@
+{
+  "name": "voo-dump",
+  "version": "0.0.1",
+  "description": "Flight dump from many sources",
+  "main": "voo-dump.js",
+  "dependencies": {
+    "webdriverio": "^4.0.9"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/voo-api/dump.git"
+  },
+  "author": "vtrbtf",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/voo-api/dump/issues"
+  },
+  "homepage": "https://github.com/voo-api/dump#readme"
+}

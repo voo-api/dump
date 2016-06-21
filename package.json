@@ -4,6 +4,7 @@
   "description": "Flight dump from many sources",
   "main": "voo-dump.js",
   "dependencies": {
+    "commander": "^2.9.0",
     "webdriverio": "^4.0.9"
   },
   "devDependencies": {},

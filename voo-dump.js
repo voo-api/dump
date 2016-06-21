@@ -1,11 +1,7 @@
 var webdriverio = require('webdriverio');
 var program = require('commander');
 
-var options = {
-    desiredCapabilities: {
-        browserName: 'firefox'
-    }
-};
+var options = {};
 
 program
   .version('0.0.1')

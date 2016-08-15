@@ -9,6 +9,7 @@
   },
   "devDependencies": {},
   "scripts": {
+    "start": "node voo-dump.js --from 'poa' --from-date '2016-10-11' --to 'rio' --to-date '2016-10-21' ", 
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {

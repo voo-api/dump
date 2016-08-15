@@ -1,11 +1,12 @@
 var webdriverio = require('webdriverio');
 var program = require('commander');
 
-var options = {};
+
+let options = {};
 
 program
   .version('0.0.1')
-  .option('--from <cit>', 'From')
+  .option('--from <city>', 'From')
   .option('--to <city>', 'To')
   .option('--from-date <date>', 'From')
   .option('--to-date <date>', 'To')
@@ -15,34 +16,28 @@ if(!program.from && !program.to && !program['from-date'] && !program['to-date'])
   throw new Error('too few args. see --help')
 }
 
-source = {
+provider = {
     name : "Decolar",
-    url : function(from, to, fromDate, toDate) {
-      return `http://www.decolar.com/shop/flights/results/multipleoneway/${from}/${to}/${fromDate}/${toDate}/1/0/0`
-    },
+    url : (from, to, fromDate, toDate) => `http://www.decolar.com/shop/flights/results/multipleoneway/${from}/${to}/${fromDate}/${toDate}/1/0/0`,
     container : ".flights-cluster"
 }
 
-
-webdriverio
+webdriverio    
     .remote(options)
     .init()
-    .url(source.url(program.from, program.to, program.fromDate, program.toDate))
-    .pause(20000)
-    .getHTML(source.container).then(function(err, html) {
+    .url(provider.url(program.from, program.to, program.fromDate, program.toDate))    
+    .getHTML(provider.container).then((err, html) => {
         if (err) {
           console.error({"err" : err , on : "departure-flight", args : program.rawArgs});
         } else {
-          console.log({ "departure-flight" : html });
+          console.log({ flight: { provider : provider, "departure" : html }});
         }
     })
     .click('.arrival-item')
-    .pause(20000)
-    .getHTML(source.container).then(function(err, html) {
+    .getHTML(provider.container).then((err, html) => {
         if (err) {
           console.error({"err" : err , on : "arrival-flight", args : program.rawArgs});
         } else {
-          console.log({ "arrival-flight" : html });
+          console.log({ flight: { provider : provider, "arrival" : html }});
         }
     })
-    .close()

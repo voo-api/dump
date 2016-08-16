@@ -1,43 +1,48 @@
-var webdriverio = require('webdriverio');
-var program = require('commander');
-
+const localproxies = require('./local-proxies'),
+      Promise = require('bluebird'),
+      rp = require("request-promise")
 
 let options = {};
 
-program
-  .version('0.0.1')
-  .option('--from <city>', 'From')
-  .option('--to <city>', 'To')
-  .option('--from-date <date>', 'From')
-  .option('--to-date <date>', 'To')
-  .parse(process.argv);
-
-if(!program.from && !program.to && !program['from-date'] && !program['to-date']){
-  throw new Error('too few args. see --help')
-}
-
 provider = {
     name : "Decolar",
-    url : (from, to, fromDate, toDate) => `http://www.decolar.com/shop/flights/results/multipleoneway/${from}/${to}/${fromDate}/${toDate}/1/0/0`,
-    container : ".flights-cluster"
+    url : (from, to, date) => `http://www.decolar.com/shop/flights/data/search/oneway/${from}/${to}/${date}/1/0/0/FARE/ASCENDING/NA/NA/NA/NA?itemType=SINGLETYPE&pageSize=1000&tripType=MULTIPLEONEWAY&resultsInstanceIndex=1`,   
 }
 
-webdriverio    
-    .remote(options)
-    .init()
-    .url(provider.url(program.from, program.to, program.fromDate, program.toDate))    
-    .getHTML(provider.container).then((err, html) => {
-        if (err) {
-          console.error({"err" : err , on : "departure-flight", args : program.rawArgs});
-        } else {
-          console.log({ flight: { provider : provider, "departure" : html }});
-        }
+let proxiedReq = (url, proxy) => {
+  return rp({
+        url : url,
+        proxy: proxy,
+        timeout: 3000
+      })
+}
+
+localproxies.loadproxies((proxies) => {
+  let requests = proxies.map((elm) => proxiedReq(provider.url("poa", "rio" , "2016-10-11"), elm))
+  Promise.some(requests, 1)
+    .then(function (data) {
+      console.log({ flight: { provider : provider, "departure" : data }});    
     })
-    .click('.arrival-item')
-    .getHTML(provider.container).then((err, html) => {
-        if (err) {
-          console.error({"err" : err , on : "arrival-flight", args : program.rawArgs});
-        } else {
-          console.log({ flight: { provider : provider, "arrival" : html }});
-        }
-    })
+    .catch(Promise.AggregateError, function(err) {
+    });
+})
+
+// webdriverio    
+//     .remote(options)
+//     .init()
+//     .url(provider.url(program.from, program.to, program.fromDate, program.toDate))    
+//     .getHTML(provider.container).then((err, html) => {
+//         if (err) {
+//           console.error({"err" : err , on : "departure-flight", args : program.rawArgs});
+//         } else {
+//           console.log({ flight: { provider : provider, "departure" : html }});
+//         }
+//     })
+//     .click('.arrival-item')
+//     .getHTML(provider.container).then((err, html) => {
+//         if (err) {
+//           console.error({"err" : err , on : "arrival-flight", args : program.rawArgs});
+//         } else {
+//           console.log({ flight: { provider : provider, "arrival" : html }});
+//         }
+//     })

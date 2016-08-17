@@ -6,6 +6,7 @@
   "dependencies": {
     "bluebird": "3.4.1",
     "proxy-lists": "1.7.0",
+    "moment": "2.14.1",
     "request-promise" : "4.1.1"
   },
   "devDependencies": {},

@@ -7,7 +7,7 @@ provider = {
     destinations: ["poa", "rio", "fln", "bsb", "sao", "bhz"],
     flights : () => {      
       let flightsAcc = []
-      for (var m = moment().add(60, 'days'); m.isAfter(moment()); m.subtract(1, 'days')) {
+      for (var m = moment().add(90, 'days'); m.isAfter(moment()); m.subtract(1, 'days')) {
         provider.destinations.forEach((elm) => {
           provider.destinations.forEach((sec_elm) => {
             if (elm != sec_elm) {
@@ -22,18 +22,35 @@ provider = {
     url : (flight) => `http://www.decolar.com/shop/flights/data/search/oneway/${flight.from}/${flight.to}/${flight.date}/1/0/0/FARE/ASCENDING/NA/NA/NA/NA?itemType=SINGLETYPE&pageSize=1000&tripType=MULTIPLEONEWAY&resultsInstanceIndex=1`,   
 }
 
+function shuffleArray(array) {
+    for (var i = array.length - 1; i > 0; i--) {
+        var j = Math.floor(Math.random() * (i + 1));
+        var temp = array[i];
+        array[i] = array[j];
+        array[j] = temp;
+    }
+    return array;
+}
 
+function randomInt (low, high) {
+    return Math.floor(Math.random() * (high - low) + low);
+}
+
+let lastScheduledCall = 0
 loader.load((proxyURIs) => {
-  provider.flights()    
-    .forEach( (flight, index) => {      
+  shuffleArray(provider.flights())    
+    .forEach( (flight, index) => {
+      let scheduled = Math.floor((((index + 1)*(randomInt(2,100))) * 2000) / randomInt(2,20))
+      if (scheduled > lastScheduledCall) lastScheduledCall = scheduled;
       setTimeout(() => {
         request.toProxiedRequest(proxyURIs, provider.url(flight), 
           (data) => { 
-            console.log({flight: { query: flight, provider : provider.name, result : data }, url : provider.url(flight), _meta : { time : new Date() }})
+            console.log({flight: { query: flight, provider : provider.name, result : JSON.stringify(data) }, url : provider.url(flight), _meta : { time : new Date() }})
           },
           (err) => {
             console.error({err: err.message});
           })
-        }, (index + 1) * 2500)
-  })  
+        }, scheduled)
+  })
+  console.log(`Last call scheduled to ${lastScheduledCall} msecs`)       
 })

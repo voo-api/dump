@@ -16,7 +16,8 @@ exports.load = (cb) => {
 		console.error(data)			
 	})
 	.once('end', () => {	
-		console.log(`Loaded ${proxyURIs.length} proxies`)
+		console.log(`Loaded ${proxyURIs.length} proxies`)				
+		proxyURIs.push(null)
 		cb(proxyURIs)			
 	})
 }

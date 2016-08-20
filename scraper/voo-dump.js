@@ -37,15 +37,20 @@ function randomInt (low, high) {
 }
 
 let lastScheduledCall = 0
+let sucessCounter = 0
 loader.load((proxyURIs) => {
   shuffleArray(provider.flights())    
     .forEach( (flight, index) => {
-      let scheduled = Math.floor((((index + 1)*(randomInt(2,100))) * 2000) / randomInt(2,20))
+      let scheduled = Math.floor((((index + 1)*(randomInt(2,100))) * 2000) / randomInt(20,100))
       if (scheduled > lastScheduledCall) lastScheduledCall = scheduled;
       setTimeout(() => {
         request.toProxiedRequest(proxyURIs, provider.url(flight), 
-          (data) => { 
-            console.log({flight: { query: flight, provider : provider.name, result : JSON.stringify(data) }, url : provider.url(flight), _meta : { time : new Date() }})
+          (data) => {
+            data.forEach((elm) => {
+              if (elm.trim().startsWith("{\"result\":")) {
+                console.log({flight: { query: flight, provider : provider.name, result : data }, url : provider.url(flight), _meta : { time : new Date() }})
+              }              
+            })            
           },
           (err) => {
             console.error({err: err.message});

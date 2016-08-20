@@ -29,7 +29,7 @@ loader.load((proxyURIs) => {
       setTimeout(() => {
         request.toProxiedRequest(proxyURIs, provider.url(flight), 
           (data) => { 
-            console.log({flight: { query: flight, provider : provider.name, result : data,  }, url : provider.url(flight), _meta : { time : new Date() }})
+            console.log({flight: { query: flight, provider : provider.name, result : data }, url : provider.url(flight), _meta : { time : new Date() }})
           },
           (err) => {
             console.error({err: err.message});

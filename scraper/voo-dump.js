@@ -1,4 +1,5 @@
-const localproxies = require('./local-proxies'),
+const request = require('./proxy/request'),
+      loader = require('./proxy/loader')
       moment = require("moment");
 
 provider = {
@@ -15,12 +16,18 @@ provider = {
     url : (flight) => `http://www.decolar.com/shop/flights/data/search/oneway/${flight.from}/${flight.to}/${flight.date}/1/0/0/FARE/ASCENDING/NA/NA/NA/NA?itemType=SINGLETYPE&pageSize=1000&tripType=MULTIPLEONEWAY&resultsInstanceIndex=1`,   
 }
 
-provider.flights().map(f => provider.url(f)).forEach(url => {
-  localproxies.toProxiedRequest(url, 
-  (data) => {
-    console.log({flight: { provider : provider.name, result : data }, url : url});
-  },
-  (err) => {
-    console.error({err: err});
-  })
+
+loader.load((proxyURIs) => {
+  provider.flights()
+    .map(f => provider.url(f))
+    .forEach( url => {
+      console.log('Getting flight info to ' + url)
+      request.toProxiedRequest(proxyURIs, url, 
+        (data) => { 
+          console.log({flight: { provider : provider.name, result : data }, url : url})
+        },
+        (err) => {
+          console.error({err: err.message});
+        })
+  })  
 })

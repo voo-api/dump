@@ -6,7 +6,7 @@ let toProxyURI = (proxies) => {
 }
 
 exports.load = (cb) => {
-	proxies.getProxies({countries: ['br'] })
+	proxies.getProxies({countries: ['br', 'us'] })
 	.on('data', (data) => {
 		console.log(`Loading more ${data.length} proxies ...`)			
 		proxyURIs = proxyURIs.concat(toProxyURI(data))

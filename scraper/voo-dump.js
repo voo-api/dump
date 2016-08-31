@@ -53,7 +53,7 @@ loader.load((proxyURIs) => {
             })            
           },
           (err) => {
-            console.error({err: err.message});
+            console.error({err: err});
           })
         }, scheduled)
   })

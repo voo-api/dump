@@ -7,11 +7,12 @@
     "bluebird": "3.4.1",
     "proxy-lists": "1.7.0",
     "moment": "2.14.1",
+    "node-http-ping": "*",
     "request-promise" : "4.1.1"
   },
   "devDependencies": {},
   "scripts": {
-    "start": "node voo-dump.js --from 'poa' --from-date '2016-10-11' --to 'rio' --to-date '2016-10-21' ", 
+    "start": "node voo-dump.js --max-old-space-size=4192 ", 
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {

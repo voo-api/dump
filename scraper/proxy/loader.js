@@ -1,15 +1,28 @@
 let proxies = require('proxy-lists');
+const ping = require('node-http-ping');
 let proxyURIs = []
 
-let toProxyURI = (proxies) => {
-	return proxies.map((element) => "" + element.protocols[0] + '://' + element.ipAddress + ":" + element.port + "/" )
+let toProxyURI = (proxy) => {
+	return "" + proxy.protocols[0] + '://' + proxy.ipAddress + ":" + proxy.port + "/" 
 }
 
 exports.load = (cb) => {
-	proxies.getProxies({anonymityLevels: ['elite'], countries: ['br']})
+	proxies.getProxies({countries: ['br']}) //
 	.on('data', (data) => {
-		console.log(`Loading more ${data.length} proxies ...`)			
-		proxyURIs = proxyURIs.concat(toProxyURI(data))
+		if (proxyURIs.length < 50) {
+			console.log(`Loading more ${data.length} proxies ...`)
+			data.forEach(element => {
+				var pingDone = false
+				ping(element.ipAddress, element.port)
+					.then(time => {
+						if (proxyURIs.length < 50) { 
+							console.log(`Proxy healthy and loaded`)
+							proxyURIs.push(toProxyURI(element))
+						} 
+					})
+					.catch(err => console.error("Error"))					
+			})
+		}			
 	})	
 	.on('error', (data) => {
 		console.error(`Error loading more proxies ...`)

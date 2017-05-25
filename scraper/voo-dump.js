@@ -18,26 +18,22 @@ if(!program.from && !program.to && !program['from-date'] && !program['to-date'])
 
 provider = {
     name : "Decolar",
-    url : (from, to, fromDate, toDate) => `http://www.decolar.com/shop/flights/results/multipleoneway/${from}/${to}/${fromDate}/${toDate}/1/0/0`,
-    container : ".flights-cluster"
+    url : (from, to, fromDate, toDate) => `http://www.decolar.com/shop/flights/results/roundtrip/${from}/${to}/${fromDate}/${toDate}/1/0/0`,
+    container : ".results-cluster-container"
 }
 
-webdriverio    
+var url = provider.url(program.from, program.to, program.fromDate, program.toDate)
+console.log(url)
+
+webdriverio
     .remote(options)
     .init()
-    .url(provider.url(program.from, program.to, program.fromDate, program.toDate))    
+    .url(url)
+    .pause(10000)
     .getHTML(provider.container).then((err, html) => {
         if (err) {
           console.error({"err" : err , on : "departure-flight", args : program.rawArgs});
         } else {
           console.log({ flight: { provider : provider, "departure" : html }});
-        }
-    })
-    .click('.arrival-item')
-    .getHTML(provider.container).then((err, html) => {
-        if (err) {
-          console.error({"err" : err , on : "arrival-flight", args : program.rawArgs});
-        } else {
-          console.log({ flight: { provider : provider, "arrival" : html }});
         }
     })

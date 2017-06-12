@@ -17,6 +17,8 @@
   },
   "homepage": "https://github.com/voo-api/dump#readme",
   "dependencies": {
-    "glob": "^7.1.2"
+    "glob": "^7.1.2",
+    "moment": "^2.18.1",
+    "nodemailer": "^4.0.1"
   }
 }

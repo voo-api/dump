@@ -21,7 +21,7 @@ var routeTimeFilter = (item => {
 })
 
 var reduce = (results) => {
-    return results//.filter(routeTimeFilter)
+    return results.filter(routeTimeFilter)
 }
 
 var processPayload = function(data) {
@@ -80,7 +80,7 @@ getDirectories('data', function (err, res) {
         let mailOptions = {
             from: 'vitor_btf@hotmail.com', // sender address
             to: 'vitor.tfreitas@gmail.com', // list of receivers
-            subject: 'Flight Report', // Subject line
+            subject: `Flight Report - ${new Date().toISOString()}`, // Subject line
             text: 'Flight Report',
             attachments: attch
         };

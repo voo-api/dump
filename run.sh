@@ -1,6 +1,8 @@
 #!/bin/bash
+export NVM_DIR="$HOME/.nvm"
+[ -s "$NVM_DIR/nvm.sh" ] && . "$NVM_DIR/nvm.sh"
 
-sudo service tor stop
+export $(cat dump.env)
 python crawler.py
-npm start
-rm -rf data/*
+node processor.js
+#rm -rf data/*

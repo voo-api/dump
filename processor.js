@@ -7,6 +7,8 @@ var getDirectories = function (src, callback) {
     glob(src + '/**/*.json', callback);
 };
 
+
+
 var routeTimeFilter = (item => {
     var outboundTime = moment(item.outbound.departure.raw)
     var inboundTime = moment(item.inbound.departure.raw)

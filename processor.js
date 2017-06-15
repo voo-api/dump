@@ -77,14 +77,20 @@ getDirectories('data', function (err, res) {
         })
 
         var attch = res.map(f => f + ".filter").map(f => {
-            return { filename: f.split("/").slice(-1)[0], path: f }
+            //return { filename: f.split("/").slice(-1)[0], path: f }
+            console.log(f)
+            var obj = JSON.parse(fs.readFileSync(f, 'utf8'));
+            return obj
         })
         let mailOptions = {
             from: 'vitor_btf@hotmail.com', // sender address
             to: 'vitor.tfreitas@gmail.com', // list of receivers
             subject: `Flight Report - ${new Date().toISOString()}`, // Subject line
             text: 'Flight Report',
-            attachments: attch
+            attachments: {
+                filename: "report.json",
+                content: JSON.stringify(attch)
+            }
         };
 
         notify.send(mailOptions)

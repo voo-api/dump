@@ -5,4 +5,4 @@ export NVM_DIR="$HOME/.nvm"
 export $(cat dump.env)
 python crawler.py
 node processor.js
-#rm -rf data/*
+rm -rf data/*

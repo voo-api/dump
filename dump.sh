@@ -1,4 +1,10 @@
 #!/bin/bash
 
+rm -rf data/*
 python crawler.py
-zip "flight-data-$(date --iso-8601=minutes).zip" -r data/
+zipfile="flight-data-$(date --iso-8601=minutes).zip"
+zip $zipfile -r data/
+
+git clone --depth 1 git@github.com:voo-api/records.git records
+mv $zipfile records/
+cd records && git add . && git commit -m "[Generated] publishing flight data from crawler" && git push origin master && cd ../ && rm -rf records

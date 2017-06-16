@@ -1,14 +1,20 @@
 from torrequest import TorRequest
 import os
 import datetime
+from dateutil.rrule import rrule, DAILY
 
-target_dates = [
-    ("2017-07-27", "2017-07-31"),
-    ("2017-07-28", "2017-08-01"),
-    ("2017-08-09", "2017-08-13"),
-    ("2017-08-10", "2017-08-14"),
-    ("2017-08-11", "2017-08-15")
-]
+target_dates = []
+
+for dt in rrule(DAILY, dtstart=datetime.datetime.now(), until=datetime.datetime.now() + datetime.timedelta(days=90)):
+    if dt.weekday() >= 3 or dt.weekday() <= 5:
+        first_enddate = dt + datetime.timedelta(days=3)
+        second_enddate = dt + datetime.timedelta(days=4)
+        third_enddate = dt + datetime.timedelta(days=5)
+
+        target_dates.append( (dt.strftime("%Y-%m-%d"), first_enddate.strftime("%Y-%m-%d")) )
+        target_dates.append( (dt.strftime("%Y-%m-%d"), second_enddate.strftime("%Y-%m-%d")) )
+        target_dates.append( (dt.strftime("%Y-%m-%d"), third_enddate.strftime("%Y-%m-%d")) )
+
 target_url = os.environ['PROVIDER_ENDPOINT_TEMPLATE']
 fake_user_agent = 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.36'
 

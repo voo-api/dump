@@ -3,3 +3,7 @@ data/**/*.json
 data/**/*.json.filter
 *.env
 *.log
+*.json
+*.csv
+!package.json
+

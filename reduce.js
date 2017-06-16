@@ -1,13 +1,16 @@
 var glob = require('glob')
 var moment = require('moment')
 var fs = require('fs')
-var notify = require('./notify')
 
 var getDirectories = function (src, callback) {
     glob(src + '/**/*.json', callback);
 };
 
-
+var weekendHash = function(start, end) {
+    var saturday = moment(start).isoWeekday(6).dayOfYear()
+    var sunday = moment(start).isoWeekday(7).dayOfYear()
+    return new Buffer(`${saturday}/${sunday}`).toString('base64')
+}
 
 var routeTimeFilter = (item => {
     var outboundTime = moment(item.outbound.departure.raw)
@@ -57,43 +60,33 @@ var processPayload = function(data) {
     return payload
 }
 
+var extractMeta = (jsonFile) => {
+    var r  = jsonFile.match(new RegExp('data/(.*)/(.*)/flight-(.*).json'));
+    var startDate = r[1]
+    var endDate = r[2]
+    var queryTimestamp = r[3]
+    return {
+        between: {
+            start: startDate,
+            end: endDate
+        },
+        weekend: weekendHash(startDate, endDate),
+        query: queryTimestamp
+    }
+}
+
 getDirectories('data', function (err, res) {
     if (err) {
         console.log('Error', err);
     } else {
-        res.forEach(jsonFile => {
-            var r  = jsonFile.match(new RegExp('data/(.*)/(.*)/flight-(.*).json'));
-            var data = reduce(processPayload(require("./" + jsonFile)))
-            var payload = {
-                meta : {
-                    startDate: r[1],
-                    endDate: r[2],
-                    collectTimestamp: r[3]
-                },
-                data: data
+        var payloads = res.map(jsonFile => {
+            return {
+                meta : extractMeta(jsonFile),
+                data: reduce(processPayload(require("./" + jsonFile)))
             }
-
-            fs.writeFileSync(jsonFile + ".filter", JSON.stringify(payload), 'utf8');
         })
 
-        var attch = res.map(f => f + ".filter").map(f => {
-            //return { filename: f.split("/").slice(-1)[0], path: f }
-            console.log(f)
-            var obj = JSON.parse(fs.readFileSync(f, 'utf8'));
-            return obj
-        })
-        let mailOptions = {
-            from: 'vitor_btf@hotmail.com', // sender address
-            to: 'vitor.tfreitas@gmail.com', // list of receivers
-            subject: `Flight Report - ${new Date().toISOString()}`, // Subject line
-            text: 'Flight Report',
-            attachments: {
-                filename: "report.json",
-                content: JSON.stringify(attch)
-            }
-        };
-
-        notify.send(mailOptions)
+        fs.writeFileSync("flights-reduced.json", JSON.stringify(payloads), 'utf8');
     }
 });
 

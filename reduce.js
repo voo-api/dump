@@ -86,7 +86,7 @@ getDirectories('data', function (err, res) {
             }
         })
 
-        fs.writeFileSync("flights-reduced.json", JSON.stringify(payloads), 'utf8');
+        fs.writeFileSync(`reduced/flights-reduced-${ new Date().toISOString() }.json`, JSON.stringify(payloads), 'utf8');
     }
 });
 

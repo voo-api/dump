@@ -1,21 +1,45 @@
-var payload = require('./flights-reduced.json')
 var converter = require('json-2-csv');
 var fs = require('fs')
+var glob = require('glob')
 
-payload = payload.map( offer => {
-    return offer.data.map( flight => {
-        flight.meta = offer.meta
-        return flight
-    })
-})
+var getDirectories = function (src, callback) {
+    glob(src + '/*.json', callback);
+};
 
-var flatten = [].concat.apply([], payload);
+var flatten = (payload) => {
+    return [].concat.apply([], payload)
+}
 
-converter.json2csv(flatten, (err, csv) => {
-    if(err) {
-        console.error(err)
+getDirectories('reduced', function (err, res) {
+    if (err) {
+        console.log('Error', err);
     } else {
-        console.log(csv)
-        fs.writeFileSync("flights-reduced.csv", csv, 'utf8');
+        var reducedPayloads = flatten(
+            res.map(jsonFile => {
+                var payload = require("./" + jsonFile)
+                return payload
+            })
+        )
+
+        var innerFlatPayloads = flatten(
+            reducedPayloads.map( offer => {
+                return offer.data.map( flight => {
+                    flight.meta = offer.meta
+                    return flight
+                })
+            })
+        )
+
+        converter.json2csv(innerFlatPayloads, (err, csv) => {
+            if(err) {
+                console.error(err)
+            } else {
+                fs.writeFileSync("flights-reduced.csv", csv, 'utf8');
+            }
+        }, {})
+
     }
-}, {})
+});
+
+
+

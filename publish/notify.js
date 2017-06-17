@@ -3,7 +3,6 @@ const nodemailer = require('nodemailer');
 
 // create reusable transport object using the default SMTP transport
 
-console.log(process.env.HOTMAIL_SMTP_USERNAME)
 let transport = nodemailer.createTransport({
     service: "hotmail",
     auth: {

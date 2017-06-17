@@ -8,8 +8,8 @@ mapper.toCSV((csv) => {
         subject: `Flight Report - ${new Date().toISOString()}`, // Subject line
         text: 'Flight Report',
         attachments: {
-            filename: "report.csv",
-            content: csv
+            filename: "report.html",
+            content: mapper.toHtml(csv)
         }
     };
 

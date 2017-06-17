@@ -3,7 +3,7 @@ var moment = require('moment')
 var fs = require('fs')
 
 var getDirectories = function (src, callback) {
-    glob(src + '/**/*.json', callback);
+    glob(src + '/*/*/*.json', callback);
 };
 
 var weekendHash = function(start, end) {
@@ -31,32 +31,34 @@ var reduce = (results) => {
 
 var processPayload = function(data) {
     var payload = []
-    data.result.data.items.forEach(item => {
-        var itineraries = item.itinerariesBox
-        var price = {
-            base: itineraries.matchingInfoMap["_0_0"].itineraryTrackingInfo.emissionAdultPrice.amount,
-            total: itineraries.matchingInfoMap["_0_0"].itineraryTrackingInfo.price[0].amount
-        }
-        itineraries.outboundRoutes.forEach(itemOR => {
-            itineraries.inboundRoutes.forEach(itemIR => {
-                var outboundSegment =  itemOR.segments[0]
-                var inboundSegment =  itemIR.segments[0]
-                var flight = {
-                    provider: item.provider,
-                    price: price,
-                    outbound: {
-                        departure: outboundSegment.departure.hour,
-                        arrival: outboundSegment.arrival.hour
-                    },
-                    inbound: {
-                        departure: inboundSegment.departure.hour,
-                        arrival: inboundSegment.arrival.hour
+    if (data.result.data.items) {
+        data.result.data.items.forEach(item => {
+            var itineraries = item.itinerariesBox
+            var price = {
+                base: itineraries.matchingInfoMap["_0_0"].itineraryTrackingInfo.emissionAdultPrice.amount,
+                total: itineraries.matchingInfoMap["_0_0"].itineraryTrackingInfo.price[0].amount
+            }
+            itineraries.outboundRoutes.forEach(itemOR => {
+                itineraries.inboundRoutes.forEach(itemIR => {
+                    var outboundSegment =  itemOR.segments[0]
+                    var inboundSegment =  itemIR.segments[0]
+                    var flight = {
+                        provider: item.provider,
+                        price: price,
+                        outbound: {
+                            departure: outboundSegment.departure.hour,
+                            arrival: outboundSegment.arrival.hour
+                        },
+                        inbound: {
+                            departure: inboundSegment.departure.hour,
+                            arrival: inboundSegment.arrival.hour
+                        }
                     }
-                }
-                payload.push(flight)
+                    payload.push(flight)
+                })
             })
         })
-    })
+    }
     return payload
 }
 

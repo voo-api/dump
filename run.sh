@@ -11,4 +11,5 @@ cd publish && sh run.sh && cd ..
 
 
 #cleaning
-rm -rf crawler/data reduce/data reduce/reduced publish/reduced
+echo "[$(date)] Cleaning..."
+rm -rf crawler/data/ reduce/data/ reduce/reduced/ publish/reduced/

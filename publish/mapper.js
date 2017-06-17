@@ -1,5 +1,6 @@
 var converter = require('json-2-csv');
 var glob = require('glob')
+var fs = require('fs')
 
 var getDirectories = function (src, callback) {
     glob(src + '/*.json', callback);
@@ -7,6 +8,13 @@ var getDirectories = function (src, callback) {
 
 var flatten = (payload) => {
     return [].concat.apply([], payload)
+}
+
+
+exports.toHtml = function (csv) {
+    var inlineCSV = csv.replace(/(?:\r\n|\r|\n)/g, '\\n');
+    var template = fs.readFileSync('plot/index.html.template', 'utf8')
+    return template.replace("################", inlineCSV)
 }
 
 exports.toCSV = function(cb) {

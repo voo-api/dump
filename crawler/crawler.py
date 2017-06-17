@@ -5,7 +5,7 @@ from dateutil.rrule import rrule, DAILY
 
 target_dates = []
 
-for dt in rrule(DAILY, dtstart=datetime.datetime.now(), until=datetime.datetime.now() + datetime.timedelta(days=90)):
+for dt in rrule(DAILY, dtstart=datetime.datetime.now() + datetime.timedelta(days=1), until=datetime.datetime.now() + datetime.timedelta(days=90)):
     if dt.weekday() >= 3 or dt.weekday() <= 5:
         first_enddate = dt + datetime.timedelta(days=3)
         second_enddate = dt + datetime.timedelta(days=4)

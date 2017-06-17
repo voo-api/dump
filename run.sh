@@ -1,8 +1,14 @@
 #!/bin/bash
-export NVM_DIR="$HOME/.nvm"
-[ -s "$NVM_DIR/nvm.sh" ] && . "$NVM_DIR/nvm.sh"
 
-export $(cat dump.env)
-python crawler.py
-node reduce.js
-rm -rf data/*
+echo "[$(date)] Starting to crawl"
+cd crawler && sh run.sh && cd ..
+cp -r crawler/data reduce/data
+echo "[$(date)] Reducing ..."
+cd reduce && sh run.sh && cd ..
+echo "[$(date)] Publishing..."
+cp -r reduce/reduced publish/reduced
+cd publish && sh run.sh && cd ..
+
+
+#cleaning
+rm -rf crawler/data reduce/data reduce/reduced publish/reduced

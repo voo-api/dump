@@ -1,0 +1,25 @@
+{
+  "name": "voo-reduce",
+  "version": "1.0.0",
+  "description": "",
+  "main": "processor.js",
+  "scripts": {
+    "start": "node reduce.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/voo-api/dump.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/voo-api/dump/issues"
+  },
+  "homepage": "https://github.com/voo-api/dump#readme",
+  "dependencies": {
+    "glob": "^7.1.2",
+    "json-2-csv": "^2.1.1",
+    "moment": "^2.18.1",
+    "nodemailer": "^4.0.1"
+  }
+}

@@ -1,0 +1,10 @@
+node_modules/
+data/**/*.json
+data/**/*.json.filter
+*.env
+*.log
+*.json
+*.csv
+reduced/*.json
+!package.json
+

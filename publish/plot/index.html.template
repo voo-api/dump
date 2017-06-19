@@ -22,6 +22,8 @@ body {
   position: absolute;
   width: 200px;
   height: 28px;
+  background-color: #CCC; 
+  padding: 15px;
   pointer-events: none;
 }
 
@@ -33,9 +35,13 @@ body {
 
 var mycsv = "################"
 
+</script>
+
+
+<script>
 var margin = {top: 20, right: 20, bottom: 30, left: 40},
     width = 1200 - margin.left - margin.right,
-    height = 500 - margin.top - margin.bottom;
+    height = 900 - margin.top - margin.bottom;
 
 // setup x 
 var xValue = function(d) { return d.outboundTimestamp; }, // data -> value
@@ -63,7 +69,7 @@ var svg = d3.select("body").append("svg")
 // add the tooltip area to the webpage
 var tooltip = d3.select("body").append("div")
     .attr("class", "tooltip")
-    .style("opacity", 0);
+    .style("opacity", 0.7);
 
 // load data
 var data = d3.csv.parse(mycsv)
@@ -115,8 +121,7 @@ svg.selectAll(".dot")
         tooltip.transition()
              .duration(200)
              .style("opacity", .9);
-        tooltip.html(d.provider + "<br/> (" + xValue(d) 
-        + ", " + yValue(d) + ")")
+            tooltip.html(d.provider + "  /  " + yValue(d) + "  <br/>  " + d["meta.between.start"] + "  /  " + d["meta.between.end"])
              .style("left", (d3.event.pageX + 5) + "px")
              .style("top", (d3.event.pageY - 28) + "px");
     })
